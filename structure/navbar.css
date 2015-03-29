@@ -1,0 +1,11 @@
+.navbar {
+	overflow: hidden
+}
+
+.navbar-title {
+	float: left
+}
+
+.navbar-nav {
+	float: right
+}

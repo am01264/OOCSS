@@ -1,0 +1,9 @@
+.media, .media-content {
+  display: block;
+  overflow: hidden;
+}
+
+.media-object {
+  float: left;
+  margin-right: 1em;
+}
