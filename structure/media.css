@@ -1,9 +1,19 @@
+/* Shows media on one side, and supplementary content (e.g. a description) on the other. 
+ * Defaults to media-object on the left, .media-content on the right. */
 .media, .media-content {
   display: block;
   overflow: hidden;
 }
 
+/* The media you wish to attach the content too! */
 .media-object {
   float: left;
   margin-right: 1em;
+}
+
+/* Places the media object to the right of normal content, rather than the left (when used with the ".media" rule) */
+.media-right .media-object {
+  float: right;
+  margin-left: 1em;
+  margin-right: 0;
 }
