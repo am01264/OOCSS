@@ -7,7 +7,7 @@ A minimalist, but extra handy CSS toolkit for rapid website design
  - Embeddables
  - [Live Examples](https://rawgit.com/am01264/oocss/master/examples.html)
 
-## Panels ([panels.css](structure/panel.css))
+## Panels ([panels.css](panel.css))
 
 ### `.panel`
 This is the real workhorse of this library. It creates a panel in which you can place any kind of content, even floats without it expanding outside it's bounds.
@@ -38,7 +38,7 @@ By default, it gives you an EM-width of space away from the connected panel.
     
 [See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#panel)
 
-## Menus ([menu.css](structure/menu.css))
+## Menus ([menu.css](menu.css))
 
 ### `.menu`
 Creates a menu out of a given list-like object, just tag each contained menu-item with `.menu-item`.
@@ -72,7 +72,7 @@ Works on the ".menu" container. Sets the menu so that it is aligned vertically.
         
 [See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#panel)
         
-## Embeddables ([aspect.css](structure/aspect.css) and [embed.css](structure/embed.css))
+## Embeddables ([aspect.css](aspect.css) and [embed.css](embed.css))
 
 ### `.aspect`
 Gives an aspect ratio to otherwise freeform objects like Video, Flash and other plugins.
