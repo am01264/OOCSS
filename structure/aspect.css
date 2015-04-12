@@ -20,7 +20,7 @@
     height: 100%;
 }
 
-/* Sets a 4:3 ratio for an adaptable-size object, when used in conjunection with the ".aspect" rule.
+/* Sets a 4:3 ratio for an adaptable-size object, when used in conjunection with the ".aspect" rule. */
 .aspect-4-3 {
     padding-bottom: 75%;
 }
