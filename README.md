@@ -2,9 +2,10 @@
 A minimalist, but extra handy CSS toolkit for rapid website design
 
 ## Table of Contents
- - [Panels](#panels)
- - [Menus](#menus)
- - [Embeddables](#embeddables)
+ - Panels
+ - Menus
+ - Embeddables
+ - [Live Examples](https://rawgit.com/am01264/oocss/master/examples.html)
 
 ## Panels ([panels.css](structure/panel.css))
 
@@ -34,6 +35,8 @@ By default, it gives you an EM-width of space away from the connected panel.
         </div>
         <div class="panel">Andrew McAuley</div>
     </div>
+    
+[See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#panel)
 
 ## Menus ([menu.css](structure/menu.css))
 
@@ -66,6 +69,8 @@ Works on the ".menu" container. Sets the menu so that it is aligned vertically.
         <li class="menu-item">Link #1</li>
         <li class="menu-item">Link #2</li>
     </ul>
+        
+[See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#panel)
         
 ## Embeddables ([aspect.css](structure/aspect.css) and [embed.css](structure/embed.css))
 
@@ -107,6 +112,8 @@ Works with the `.aspect` container. Sets a 4:3 ratio for an adaptable-size objec
         <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
     </div>
 
+[See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#aspect)
+
 ### `.embed`
 Expands a normally fixed-size embeddable object to fill the available width.
 Defaults to applying this to images, videos, iframes and anything you tag with ".embed".
@@ -121,3 +128,5 @@ Defaults to applying this to images, videos, iframes and anything you tag with "
  - `audio`,
  - `video`,
  - `iframe`
+ 
+[See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#embed)
