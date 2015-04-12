@@ -111,14 +111,13 @@ Works with the `.aspect` container. Sets a 4:3 ratio for an adaptable-size objec
 Expands a normally fixed-size embeddable object to fill the available width.
 Defaults to applying this to images, videos, iframes and anything you tag with ".embed".
 
+    <!-- Expands a fixed width image to fill the available width -->
+    <div>
+        <img class="embed" src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
+    </div>
+
 *Warning* This is applied by default to the following tags:
  - `img`,
  - `audio`,
  - `video`,
  - `iframe`
- 
- 
-    <!-- Expands a fixed width image to fill the available width -->
-    <div>
-        <img class="embed" src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
-    </div>
