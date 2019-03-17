@@ -1,4 +1,4 @@
-/* Expands a normally fixed-size embeddable object to fill the available width.
+/* Limits an embeddable object to the containers width.
  * Defaults to applying this to images, videos, iframes and anything you tag with ".embed" 
  */
 img,
