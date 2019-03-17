@@ -115,7 +115,7 @@ Works with the `.aspect` container. Sets a 4:3 ratio for an adaptable-size objec
 [See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#aspect)
 
 ### `.embed`
-Limits an embeddable object to fill the available width.
+Limits an embeddable object to the containers width, and adapts the height to avoid vertical stretching
 Defaults to applying this to images, videos, iframes and anything you tag with ".embed".
 
     <!-- Expands a fixed width image to fill the available width -->

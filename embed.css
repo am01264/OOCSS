@@ -1,4 +1,4 @@
-/* Limits an embeddable object to the containers width.
+/* Limits an embeddable object to the containers width, and adapts the height to avoid vertical stretching
  * Defaults to applying this to images, videos, iframes and anything you tag with ".embed" 
  */
 img,
