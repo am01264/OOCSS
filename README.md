@@ -123,10 +123,4 @@ Defaults to applying this to images, videos, iframes and anything you tag with "
         <img class="embed" src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
     </div>
 
-*Warning* This is applied by default to the following tags:
- - `img`,
- - `audio`,
- - `video`,
- - `iframe`
- 
 [See Live Examples](https://rawgit.com/am01264/oocss/master/examples.html#embed)
