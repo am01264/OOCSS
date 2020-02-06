@@ -1,4 +1,13 @@
-/* Limits an embeddable object to the containers width, and adapts the height to avoid vertical stretching
+/**
+ * Limits an embeddable object to the containers width, and adapts the height to avoid vertical stretching
+ *
+ * @example
+ * ```html
+ * <!-- Limits a fixed width image to the available width -->
+ * <div>
+ *     <img class="embed" src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
+ * </div>
+ * ```
  */
 .embed {
     max-width: 100%;

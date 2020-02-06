@@ -1,5 +1,27 @@
-/* Gives an aspect ratio to otherwise freeform objects like Video, Flash and other plugins.
+/**
+ * Gives an aspect ratio to otherwise freeform objects like Video, Flash and other plugins.
  * Defaults to 16:9 ratio.
+ *
+ * Simply tag the otherwise adaptable-size object we want to restrict with `.adaptable`.
+ *
+ * @example
+ * ```html
+  * <!-- Displays a test youtube video in the "widescreen" 16:9 shape:
+ * 
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ * 
+ * -->
+ * <div class="aspect">
+ *     <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
+ * </div>
+ * ```
  */
 .aspect {
     position: relative;
@@ -20,7 +42,27 @@
     height: 100%;
 }
 
-/* Sets a 4:3 ratio for an adaptable-size object, when used in conjunection with the ".aspect" rule. */
+/**
+ * Works with the `.aspect` container. 
+ * Sets a 4:3 ratio for an adaptable-size object.
+ * 
+ * @example
+ * ```html
+ * <!-- Displays a test youtube in the standard TV 4:3 shape:
+ * 
+ *     0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0
+ *     0 0 0 0 0 0 0 0
+ *     
+ * -->
+ * <div class="aspect aspect-4-3">
+ *     <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
+ * </div>
+ * ```
+ */
 .aspect-4-3 {
     padding-bottom: 75%;
 }

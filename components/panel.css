@@ -1,20 +1,73 @@
-/* Creates a panel in which you can place any kind of content, even floats without it expanding outside it's bounds. 
- * Doesn't do anything to help with absolute/relative positioning. */
+/**
+ * Creates a panel in which you can place any kind of content, even floats without it expanding outside it's bounds. 
+ *
+ * Behind the scenes it uses some Block Formatting Context magic to avoid the normal clearing of floats and fixed-width columns..
+ * 
+ * @example
+ * 
+ * ```html
+ * <!-- Displays as "Hello                   World" -->
+ * <div class="panel">
+ *     <p style="float: right">World</p>
+ *     <p>Hello</p>
+ * </div>
+ * ``` 
+ */
 .panel {
   display: block;
   overflow: hidden;
 }
 
-/* Sits b-e-a-utifully to the left of any panel it's next to.
- * By default, it gives you an EM-width of space away from the connected panel. */
-.panel-left {
+/**
+ * Sits b-e-a-utifully to the left of any panel it's next to. 
+ * By default, it gives you an EM-width of space away from the connected panel.
+ * 
+ * @example
+ * ```html
+ * <!-- Displays as "Hello World" -->
+ * <div class="panel-left">Hello</div>
+ * <div class="panel">World</div>
+ * ```
+ * 
+ * @example
+ * ```html
+ * <!-- Displays as a media object (fixed-size image on left, with expandable content on right) -->
+ * <div class="panel">
+ *     <div class="panel-left">
+ *         <img src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
+ *     </div>
+ *     <div class="panel">Andrew McAuley</div>
+ * </div>
+ * ```
+ */
+ .panel-left {
   float: left;
   margin-right: 1em;
 }
 
-/* Sits b-e-a-utifully to the right of any panel it's next to.
- * By default, it gives you an EM width of spacing away from the connected panel. */
-.panel-right {
+/**
+ * Sits b-e-a-utifully to the right of any panel it's next to. 
+ * By default, it gives you an EM-width of space away from the connected panel.
+ * 
+ * @example
+ * ```html
+ * <!-- Displays as "World Hello" -->
+ * <div class="panel-right">Hello</div>
+ * <div class="panel">World</div>
+ * ```
+ * 
+ * @example
+ * ```html
+ * <!-- Displays as a right-to-left media object (fixed-size image on right, with expandable content on left) -->
+ * <div class="panel">
+ *     <div class="panel-right">
+ *         <img src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
+ *     </div>
+ *     <div class="panel">Andrew McAuley</div>
+ * </div>
+ * ```
+ */
+ .panel-right {
   float: right;
   margin-left: 1em;
 }
