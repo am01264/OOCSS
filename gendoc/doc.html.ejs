@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="<%= doc.source %>" />
+</head>
+<body>
+    
+    <h1><%= doc.title %></h1>
+
+    <%= doc.description %>
+
+    <% if (doc.examples.length > 1) { %>
+        <h2>Examples</h2>
+    <% } %>
+
+    <% doc.examples.forEach((example, index) => { %>
+        
+        <h3>Example <%= index + 1 %></h3>
+
+        <%= example %>
+
+    <% }) %>
+
+</body>
+</html>

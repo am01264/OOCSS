@@ -1,0 +1,59 @@
+# OOCSS
+A minimalist, but extra handy CSS toolkit for rapid website design
+
+<%# Table of Contents %> 
+
+<% if (docs.length > 1) { %>
+## Table of Contents
+<% } %>
+<% docs.forEach(doc => { %>
+ - [<%=docs.title%>](#<%=docs.title%>)
+<% }) %>
+
+<%#
+Produces: 
+
+## Table of Contents
+ - Panels
+ - Menus
+ - Embeddables
+#>
+
+<%# Documentation %> 
+
+<% docs.forEach(doc => { %>
+   
+    ### <%= doc.title %>
+
+    <%= doc.description %>
+
+    <% if (doc.examples.length > 1) { %>
+        #### Examples
+    <% } %>
+
+    <% doc.examples.forEach((example, index) => { %>
+        
+        **Example <%= index + 1 %>**
+
+        <%= example %>
+
+    <% }) %>
+    
+<% }); %>
+
+<%# This part produces something like:
+
+### `.panel`
+This is the real workhorse of this library. It creates a panel in which you can place any kind of content, even floats without it expanding outside it's bounds.
+Doesn't do anything to help with absolute/relative positioning.
+Behind the scenes it uses some Block Formatting Context magic to avoid the normal clearing of floats and fixed-width columns..
+
+**Example 1**
+
+    <!-- Displays as "Hello                   World" -->
+    <div class="panel">
+        <p style="float: right">World</p>
+        <p>Hello</p>
+    </div>
+
+%> 
