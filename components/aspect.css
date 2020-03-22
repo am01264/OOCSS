@@ -1,29 +1,134 @@
 /**
- * Gives an aspect ratio to otherwise freeform objects like Video, Flash and other plugins.
+ * Gives an aspect ratio to otherwise freeform content including Text, Images, Video, Flash and other plugins.
  * Defaults to 16:9 ratio.
  *
- * Simply tag the otherwise adaptable-size object we want to restrict with `.adaptable`.
+ * Simply tag the otherwise adaptable-size content we want to restrict with `.adaptable`.
+ *
+ * Breaking changes: 
+ *  - You must now specify either `.aspect-fixed` or `.aspect-expand`
+ *    For fixed-size objects use `.aspect-fixed` or for expanding content use `.aspect-expand`
  *
  * @example
  * ```html
-  * <!-- Displays a test youtube video in the "widescreen" 16:9 shape:
+ * <!-- Displays a test youtube video in the "widescreen" 16:9 shape:
  * 
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ *     1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
+ *   1 +-----------------------------+
+ *   2 | 08080808080                 |
+ *   3 | 08080808080                 |
+ *   4 |   0808080                   |
+ *   5 |     |0|                     |
+ *   6 |     |0|                     |
+ *   7 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 |
+ *   8 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 
+ *   9 +-----------------------------+ 
  * 
  * -->
- * <div class="aspect">
+ * <div class="aspect aspect-fixed">
  *     <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
  * </div>
  * ```
  */
-.aspect {
+.aspect {}
+
+/**
+ * Works with the `.aspect` container. 
+ * Allows you to create a container that matches chosen aspect ratio, and allows content to expand the container vertically.   
+ *
+ * With thanks to [David Dickball](http://daviddickball.uk/2017/12/forcing-a-div-to-retain-aspect-ratio-but-also-expand-if-theres-more-content/) and [Chris Coyier](https://css-tricks.com/aspect-ratio-boxes/) for inspiration 
+ *
+ * @example
+ * ```html
+ * <!-- Displays various test content in the "widescreen" 16:9 shape:
+ * 
+ *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6             0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
+ *   0 +-----+-------------------------+           0 +-----+-------------------------+
+ *   1 | 0-0 |  Hello world            |           1 | 0-0 |  Hello world            |
+ *   2 | \_/ |                         |           2 | \_/ |                         |
+ *   3 +-----+  Random media objects   |           3 +-----+  Short media objects    | 
+ *   4 |        sometimes have the     |           4 |        sometimes have issues. |
+ *   5 |        problem of either      |           5 |                               |
+ *   6 |        being full blocks or   |           6 |        This fixes them too.   |
+ *   7 |        fixed-size without     |           7 |                               |
+ *   8 |        overflow.              |           8 |                               |
+ *   9 | - - - - - - - - - - - - - - - |           9 +-------------------------------+
+ *   . |        This card calls        |         
+ *   . |        bullshit. It can be    |         
+ *   . |        done.                  |         
+ *   . +-------------------------------+         
+ * 
+ * -->
+ * <div class="aspect aspect-expand" style="max-width: 16em;">
+ *     <div class="adaptable" style="background-color: #0074D9; display: inline-block">
+ *         <div class="panel-left">
+ *             <img src="about:blank" style="width: 5em; height: 5em" />
+ *         </div>
+ *         <div class="panel">
+ *             <h1>Hello world</h1>
+ *             <p>Random media objects sometimes have the problem of either being full blocks or fixed-size without
+ *                 overflow</p>
+ *             <p>This card calls bullshit. It can be done.</p>
+ *         </div>
+ *     </div>
+ * 
+ *     <div class="adaptable" style="background-color: #FF851B; display: inline-block">
+ *         <div class="panel-left">
+ *             <img src="about:blank" style="width: 5em; height: 5em" />
+ *         </div>
+ *         <div class="panel">
+ *             <p>Short media objects sometimes have issues.</p>
+ *             <p>This fixes them too.</p>
+ *         </div>
+ *     </div>
+ * </div>
+ * ```
+ */
+.aspect-expand {}
+
+.aspect-expand .adaptable::before {
+    content: "";
+    
+    /* Avoid affecting normal layout */
+    float: left;
+    width: 1px;
+    margin-left: 1px;
+    height: 0;
+
+    /* Pump up the element height */
+    padding-top: 56.25%;
+}
+
+.aspect-expand .adaptable {
+    /* Trigger a block-formatting context on any non-inline element */
+    overflow: hidden;
+}
+
+/**
+ * Works with the `.aspect` container.
+ * Allows you to force an element to a specific aspect-ratio. Does not allow overflow.
+ *
+ * @example
+ * ```html
+ * <!-- Displays a test youtube video in the "widescreen" 16:9 shape:
+ * 
+ *     1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
+ *   1 +-----------------------------+
+ *   2 | 08080808080                 |
+ *   3 | 08080808080                 |
+ *   4 |   0808080                   |
+ *   5 |     |0|                     |
+ *   6 |     |0|                     |
+ *   7 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 |
+ *   8 | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | 
+ *   9 +-----------------------------+
+ * 
+ * -->
+ * <div class="aspect aspect-fixed">
+ *     <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
+ * </div>
+ * ```
+ */
+.aspect-fixed {
     position: relative;
     height: 0;
     overflow: hidden;
@@ -33,7 +138,7 @@
 }
 
 /* The otherwise adaptable-size object we want to restrict */
-.aspect .adaptable {
+.aspect-fixed .adaptable {
     position: absolute;
     top: 0;
     left: 0;
@@ -50,19 +155,26 @@
  * ```html
  * <!-- Displays a test youtube in the standard TV 4:3 shape:
  * 
- *     0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0
- *     0 0 0 0 0 0 0 0
+ *     1 2 3 4 5 6 7 8
+ *   1 +-------------+
+ *   2 |    08080    |
+ *   3 |   0808080   |
+ *   4 |    00800    |
+ *   5 |     |0|     |
+ *   6 +-------------+
  *     
  * -->
- * <div class="aspect aspect-4-3">
+ * <div class="aspect aspect-fixed aspect-4-3">
  *     <iframe class="adaptable" width="560" height="315" src="https://www.youtube.com/embed/p9JYPAcAaRE" frameborder="0" allowfullscreen></iframe>
  * </div>
  * ```
  */
-.aspect-4-3 {
+.aspect-4-3 {}
+
+.aspect-fixed.aspect-4-3 {
+    padding-bottom: 75%;
+}
+
+.aspect-expand.aspect-4-3 .adaptable::before {
     padding-bottom: 75%;
 }
