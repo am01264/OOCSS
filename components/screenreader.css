@@ -1,0 +1,21 @@
+/**
+ * Marks an item so only screenreaders, and keyboard-users can quickly navigate around a page. Most useful for "Skip to content" links.
+ *
+ * With thanks to [David Dickball](http://daviddickball.uk/2013/04/dont-do-skip-to-content-links-wrong/) and the [Wordpress team](https://wordpress.com/) for inspiration.
+ *
+ * @example
+ * ```html
+ * <!-- Displays as "World" initially, then "Hello World" when tabbed to -->
+ * <a href="#" class="screenreader">Hello</a>
+ * <a href="#">World</a>
+ * ```
+ */
+.screenreader {
+    position: absolute;
+    left: 10000px; /* Assuming 8K is currently largest screen size */
+}
+
+.screenreader:focus {
+    position: relative;
+    left: auto;
+}
