@@ -4,7 +4,13 @@
  *
  * @example
  * ```html
- * <!-- Displays as "Link #1 Link #2" -->
+ * <!-- Displays as
+ *
+ *     +---------+---------+
+ *     | Link #1 | Link #2 |
+ *     +---------+---------+
+ *
+ * -->
  * <ul class="menu">
  *     <li class="menu-item">Link #1</li>
  *     <li class="menu-item">Link #2</li>
@@ -26,7 +32,13 @@
  * 
  * @example
  * ```html
- * <!-- Displays as "Link #1Link #2" -->
+ * <!-- Displays as
+ *
+ *     +-------+-------+
+ *     |Link #1|Link #2| (n.b. no spacing between)
+ *     +-------+-------+
+ *
+ * -->
  * <ul class="menu menu-float">
  *     <li class="menu-item">Link #1</li>
  *     <li class="menu-item">Link #2</li>
@@ -47,8 +59,14 @@
  * @example
  * ```html
  * <!-- Displays as
- *    "Link #1
- *     Link #2" -->
+ *
+ *     +---------+
+ *     | Link #1 |
+ *     +---------+
+ *     | Link #2 |
+ *     +---------+ 
+ *
+ * -->
  * <ul class="menu menu-vertical">
  *     <li class="menu-item">Link #1</li>
  *     <li class="menu-item">Link #2</li>
