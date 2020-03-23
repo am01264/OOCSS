@@ -43,12 +43,12 @@
  * 
  *     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6             0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
  *   0 +-----+-------------------------+           0 +-----+-------------------------+
- *   1 | 0-0 |  Hello world            |           1 | 0-0 |  Hello world            |
- *   2 | \_/ |                         |           2 | \_/ |                         |
- *   3 +-----+  Random media objects   |           3 +-----+  Short media objects    | 
- *   4 |        sometimes have the     |           4 |        sometimes have issues. |
+ *   1 | 0-0 |  Hello world            |           1 | 0-0 |  Short media objects    |
+ *   2 | \_/ |                         |           2 | \_/ |  sometimes have issues. |
+ *   3 +-----+  Random media objects   |           3 +-----+                         | 
+ *   4 |        sometimes have the     |           4 |        This fixes them too.   |
  *   5 |        problem of either      |           5 |                               |
- *   6 |        being full blocks or   |           6 |        This fixes them too.   |
+ *   6 |        being full blocks or   |           6 |                               |
  *   7 |        fixed-size without     |           7 |                               |
  *   8 |        overflow.              |           8 |                               |
  *   9 | - - - - - - - - - - - - - - - |           9 +-------------------------------+
