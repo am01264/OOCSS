@@ -5,14 +5,27 @@
  *
  * @example
  * ```html
- * <!-- Displays as "World" initially, then "Hello World" when tabbed to -->
+ * <!-- Displays as "World" initially, then "Hello World" when tabbed to 
+ *
+ *     Default view:
+ *     +-------+
+ *     | World |
+ *     +-------+
+ *
+ *     A screen-reader would read:
+ *     +-------+-------+
+ *     | Hello | World |
+ *     +-------+-------+
+ *     ...also shows if you tab through the page with the keyboard.
+ * 
+ * -->
  * <a href="#" class="screenreader">Hello</a>
  * <a href="#">World</a>
  * ```
  */
 .screenreader {
     position: absolute;
-    left: 10000px; /* Assuming 8K is currently largest screen size */
+    left: 10000px; /* Assuming 8K is largest screen size */
 }
 
 .screenreader:focus {

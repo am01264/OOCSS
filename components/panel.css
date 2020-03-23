@@ -1,12 +1,18 @@
 /**
  * Creates a panel in which you can place any kind of content, even floats without it expanding outside it's bounds. 
  *
- * Behind the scenes it uses some Block Formatting Context magic to avoid the normal clearing of floats and fixed-width columns..
+ * Behind the scenes it uses some Block Formatting Context magic to avoid the normal clearing of floats and fixed-width columns.
  * 
  * @example
  * 
  * ```html
- * <!-- Displays as "Hello                   World" -->
+ * <!-- Displays as
+ * 
+ *     +------------------------+-------+
+ *     | Hello                  | World |  (nb. notice the float stays in the container, not outside)
+ *     +------------------------+-------+
+ * 
+ * -->
  * <div class="panel">
  *     <p style="float: right">World</p>
  *     <p>Hello</p>
@@ -14,8 +20,8 @@
  * ``` 
  */
 .panel {
-  display: block;
-  overflow: hidden;
+    display: block;
+    overflow: hidden;
 }
 
 /**
@@ -24,14 +30,27 @@
  * 
  * @example
  * ```html
- * <!-- Displays as "Hello World" -->
+ * <!-- Displays as
+ *
+ *     +-------+------------------------+ 
+ *     | Hello | World                  |
+ *     +-------+------------------------+
+ *
+ * -->
  * <div class="panel-left">Hello</div>
  * <div class="panel">World</div>
  * ```
  * 
  * @example
  * ```html
- * <!-- Displays as a media object (fixed-size image on left, with expandable content on right) -->
+ * <!-- Displays as a media object (fixed-size image on left, with expandable content on right) 
+ *
+ *     +-----+------------------------+
+ *     | 0-0 | Andrew McAuley         |
+ *     | \_/ |                        |
+ *     +-----+------------------------+
+ *     
+ * -->
  * <div class="panel">
  *     <div class="panel-left">
  *         <img src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
@@ -40,9 +59,9 @@
  * </div>
  * ```
  */
- .panel-left {
-  float: left;
-  margin-right: 1em;
+.panel-left {
+    float: left;
+    margin-right: 1em;
 }
 
 /**
@@ -51,14 +70,27 @@
  * 
  * @example
  * ```html
- * <!-- Displays as "World Hello" -->
+ * <!-- Displays as "World Hello" 
+ *
+ *     +-------------------------------+
+ *     | World                 | Hello |
+ *     +-------------------------------+
+ *
+ * -->
  * <div class="panel-right">Hello</div>
  * <div class="panel">World</div>
  * ```
  * 
  * @example
  * ```html
- * <!-- Displays as a right-to-left media object (fixed-size image on right, with expandable content on left) -->
+ * <!-- Displays as a right-to-left media object (fixed-size image on right, with expandable content on left) 
+ * 
+ *     +------------------------+-----+
+ *     | Andrew McAuley         | 0-0 |
+ *     |                        | \_/ |
+ *     +------------------------+-----+ 
+ * 
+ * -->
  * <div class="panel">
  *     <div class="panel-right">
  *         <img src="http://gravatar.com/avatar/4cf4bc1b3618d2f73a2a290984a1129f?size=32">
@@ -67,7 +99,7 @@
  * </div>
  * ```
  */
- .panel-right {
-  float: right;
-  margin-left: 1em;
+.panel-right {
+    float: right;
+    margin-left: 1em;
 }
