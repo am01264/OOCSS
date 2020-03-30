@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "title": "Root",
+    "type": "object",
+    "properties": {
+        "jobs": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "sourceFiles": {
+                                "type": "string"
+                            },
+                            "template": {
+                                "type": "string"
+                            },
+                            "outputFile": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "sourceFiles",
+                            "template",
+                            "outputFile"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "sourceFiles": {
+                                "type": "string"
+                            },
+                            "template": {
+                                "type": "string"
+                            },
+                            "outputDir": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "sourceFiles",
+                            "template",
+                            "outputDir"
+                        ]
+                    }                    
+                ]
+            }
+        }
+    },
+    "required": [
+        "jobs"
+    ]
+}

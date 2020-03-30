@@ -1,0 +1,22 @@
+{
+  "name": "oocss.css",
+  "version": "2.0.0",
+  "description": "A minimalist, but handy CSS toolkit for rapid website design",
+  "main": "oocss.css",
+  "repository": "git@github.com:am01264/oocss.git",
+  "author": "Andrew McAuley <am01264@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "@types/async": "^3.0.8",
+    "@types/css": "^0.0.31",
+    "@types/ejs": "^3.0.1",
+    "@types/gulp": "^4.0.6",
+    "@types/node": "^13.9.3",
+    "async": "^3.2.0",
+    "comment-parser": "^0.7.2",
+    "css": "^2.2.4",
+    "ejs": "^3.0.1",
+    "vinyl-fs": "^3.0.3"
+  }
+}
