@@ -1,7 +1,7 @@
 import { fstat, readFile } from "fs";
 import async, { nextTick, concat } from "async";
 import {src, dest} from "vinyl-fs";
-import { NodeCallback, Doc, isDoc } from "./gendoc-common";
+import { NodeCallback, Doc, isDoc, capture_error_or_result } from "./gendoc-common";
 import { CSSReader } from "./gendoc-css";
 import { Transform, TransformOptions, Readable, Stream, pipeline } from "stream";
 import Vinyl from "vinyl";
@@ -50,24 +50,15 @@ function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
         (next : NodeCallback<string>) => {
             // Read the file
             
-            readFile(filename, {}, (err, data) => {
-                return (err) ? next(err) : data.toString()
+            readFile(filename, (err, data) => {
+                return (err) ? next(err) : next(null, data.toString())
             })
         },
 
         (data : string, next : NodeCallback<any>) => {
             // Parse JSON
             
-            let oConfig = null;
-            let eErr = null;
-
-            try {
-                oConfig = JSON.parse(data);
-            } catch (err) {
-                eErr = err;
-            }
-
-            next(eErr, oConfig);
+            capture_error_or_result(JSON.parse, data, next);
         },
 
         (oConfig : any, next : NodeCallback<Config>) => {
@@ -122,9 +113,14 @@ function processConfig( oConfig : Config, done : NodeCallback<void> ) {
             (trail : Stream[], next : NodeCallback<Stream[]>) => {
                 // Applying templates
 
-                // TODO EJS Templates
+                readFile(job.template, (err, buff) => {
+                    // Read template file
+                    if (err) return next(err);
+                    
+                    trail.push(new StreamDocToEjsTemplate(buff.toString()))
+                    next(null, trail);
+                });
 
-                next(null, trail);
             },
 
             (trail : Stream[], next : NodeCallback<Stream[]>) => {
@@ -147,7 +143,8 @@ function processConfig( oConfig : Config, done : NodeCallback<void> ) {
 
 }
 
-import {} from "ejs";
+
+import ejs from "ejs";
 class StreamDocToEjsTemplate extends Transform {
     
     template : string;
@@ -159,30 +156,62 @@ class StreamDocToEjsTemplate extends Transform {
     
     _transform(vFile : Vinyl, _encoding : string, done : NodeCallback<Vinyl>) {
 
-        if (! Vinyl.isVinyl(vFile)) {
-            return done(new TypeError('Expected Vinyl file, but got something else'))
-        }
+        async.waterfall([
 
-        const sFileContents = vFile.contents.toString()
-        const oaDocs : Doc[] = JSON.parse(sFileContents)
+            (next : NodeCallback<Vinyl>) => {
+                // Enforce Vinyl
+                
+                if (! Vinyl.isVinyl(vFile)) {
+                    return next(new TypeError('Expected Vinyl file, but got something else'))
+                }
 
-        const ejsData = {};
+                next(null, vFile);
+            },
 
-        if (Array.isArray(oaDocs)) {
-            ejsData.docs = oaDocs;
-        } else {
-            ejsData.doc = oaDocs
-        }
+            (vFile : Vinyl, next : NodeCallback<any>) => {
+                // Parse JSON contents
 
-        if (! isDoc(oDocs)) {
-            return done(new TypeError('Expected Doc inside, but got something else'))
-        }
+                const sFileContents = vFile.contents.toString();
+                capture_error_or_result(JSON.parse, sFileContents, next);
 
-        
-        aDocs
+            },
 
-        // TODO
-        
+            ( anything : any, next : NodeCallback<{doc : Doc}|{docs : Doc[]}> ) => {
+                // Prepare data for template
+
+                const ejsData = {};
+
+                if (Array.isArray(anything) && anything.every(d => isDoc(d))) {
+                    // Handle an array of docs
+                    next(null, { docs: anything })
+
+                } else if (isDoc(anything)) {
+                    // Handle a lone Doc
+                    next(null, { doc: anything });
+
+                } else {
+                    // Boogeyman has arrived, call the alarm
+                    return next(new TypeError('Expected Doc in file contents, but got something else'))
+                }
+
+            },
+
+            ( ejsData : Object, next : NodeCallback<string> ) => {
+                // Apply the data to template
+
+                capture_error_or_result(ejs.render, ejsData, next);
+
+            },
+
+            ( hydratedTemplate : string, next : NodeCallback<Vinyl> ) => {
+
+                // Update vinyl file, and pass it along
+                vFile.contents = Buffer.from(hydratedTemplate);
+                next(null, vFile);
+
+            }
+
+        ], done);
 
     }
 }
