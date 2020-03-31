@@ -2,7 +2,7 @@ import {parse, Stylesheet, ParserOptions, Rule, Comment} from "css"
 import async from "async";
 import parseDocComment from "comment-parser"
 
-import {Doc, NodeCallback} from "./gendoc-common"
+import {Doc, NodeCallback, capture_error_or_result} from "./gendoc-common"
 import { Transform, TransformOptions } from "stream";
 
 import Vinyl from "vinyl"
@@ -114,7 +114,7 @@ function getDocumentedElementsFromCssAst( ast : Stylesheet, cb : NodeCallback<Do
 
     return cb(null, dRules);
 
-    function isDocComment( o ) : o is Comment {
+    function isDocComment( o : any ) : o is Comment {
         return 'type' in o && o.type === 'comment'
             && 'comment' in o && typeof o.comment === 'string' && o.comment.startsWith('*')
     }
