@@ -1,8 +1,8 @@
-import async from "async";
-import parseDocComment from "comment-parser";
+import {waterfall} from "async";
+import * as parseDocComment from "comment-parser";
 import { Comment, parse, ParserOptions, Rule, Stylesheet } from "css";
 import { Transform, TransformOptions } from "stream";
-import Vinyl from "vinyl";
+import * as Vinyl from "vinyl";
 
 import { Doc, NodeCallback } from "./gendoc-common";
 
@@ -17,7 +17,7 @@ export class CSSReader extends Transform {
             done(new Error(`${CSSReader.name} can only process Vinyl files.`))
         }
 
-        const sChunk = vFile.contents.toString();
+        const sChunk = vFile.contents ? vFile.contents.toString() : '';
         const sResult = JSON.stringify(parseCss(sChunk, done));
 
         vFile.contents = Buffer.from(sResult);
@@ -29,7 +29,7 @@ export class CSSReader extends Transform {
 
 export function parseCss( cssSource : string, cb : NodeCallback<Doc[]> ) {
 
-    async.waterfall([
+    waterfall([
         
         (next : NodeCallback<Stylesheet>) => {
             getAstFromCss(cssSource, {silent: true}, next);
@@ -47,7 +47,7 @@ export function parseCss( cssSource : string, cb : NodeCallback<Doc[]> ) {
                 const astComment = parseDocComment('/*' + r.comment.comment + '*/', {})[0];
                 
                 return {
-                    title: r.rule.selectors.join(', '),
+                    title: (r.rule.selectors || []).join(', '),
                     description: astComment.description,
                     examples: astComment.tags
                         .filter(t => t.tag === 'example')
@@ -66,7 +66,11 @@ function getAstFromCss( source : string, options : ParserOptions = {silent : tru
 
     const ast = parse(source, options);
     
-    if (ast.stylesheet.parsingErrors.length > 0) {
+    if (! ('stylesheet' in ast) || !ast.stylesheet) {
+        return cb(new Error('AST does not include Stylesheet element'));
+    }
+
+    if (Array.isArray(ast.stylesheet.parsingErrors) && ast.stylesheet.parsingErrors.length > 0) {
         
         /* HACK: 
            TypeScript reports "ParseError" requires "name"... 
@@ -92,7 +96,11 @@ interface DocumentedRule {
 
 function getDocumentedElementsFromCssAst( ast : Stylesheet, cb : NodeCallback<DocumentedRule[]> ) {
     
-    const dRules = [];
+    const dRules : DocumentedRule[] = [];
+
+    if (! ('stylesheet' in ast) || !ast.stylesheet) {
+        return cb(new Error('Expected stylesheet element on AST'))
+    }
 
     ast.stylesheet.rules.forEach((astRule, ixRules, arrRules) => {
         

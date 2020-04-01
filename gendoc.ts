@@ -1,8 +1,8 @@
-import async from "async";
-import ejs from "ejs";
-import { readFile } from "fs";
+import {waterfall} from "async";
+import {render as renderEjsTemplate} from "ejs"
+import { readFile, fstat } from "fs";
 import { pipeline, Stream, Transform, TransformOptions } from "stream";
-import Vinyl from "vinyl";
+import * as Vinyl from "vinyl";
 import { dest, src } from "vinyl-fs";
 
 import { capture_error_or_result, Doc, isDoc, NodeCallback } from "./gendoc-common";
@@ -42,12 +42,12 @@ function isJob( j : any ) : j is Job {
 function isConfig( c : any ) : c is Config {
     return 'jobs' in c 
         && Array.isArray(c.jobs)
-        && c.jobs.every(j => isJob(j))
+        && c.jobs.every((j : any) => isJob(j))
 }
 
 function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
     
-    async.waterfall([
+    waterfall([
         
         (next : NodeCallback<string>) => {
             // Read the file
@@ -81,7 +81,7 @@ function processConfig( oConfig : Config, done : NodeCallback<void> ) {
 
     oConfig.jobs.forEach(job => {
 
-        async.waterfall([
+        waterfall([
             
             (next : NodeCallback<Stream[]>) => {
                 // Source loading
@@ -130,12 +130,16 @@ function processConfig( oConfig : Config, done : NodeCallback<void> ) {
                 }        
             }
 
-        ], (err, result : Stream[]) => {
+        ], (err, result? : Stream[]) => {
             if (err) return done(err);
+            if (!result) return done(new Error('Expected stream pipeline'))
 
-            const args : any[] = result;
-            args.push(done)
-            pipeline.apply(null, args)
+            /**
+             * Hack: Due to above use of generics, I'm keeping it simple.
+             * Forcing typescript to read pipeline() as taking args of any[]
+             */
+            const fTypeForcedPipeline : (...args : any[]) => void = pipeline;
+            fTypeForcedPipeline.apply(null, [...result, done])
         })
 
     })
@@ -152,9 +156,9 @@ class StreamDocToEjsTemplate extends Transform {
         this.template = template;
     }
     
-    _transform(vFile : Vinyl, _encoding : string, done : NodeCallback<Vinyl>) {
+    _transform(vFile : any, _encoding : string, done : NodeCallback<Vinyl>) {
 
-        async.waterfall([
+        waterfall([
 
             (next : NodeCallback<Vinyl>) => {
                 // Enforce Vinyl
@@ -169,7 +173,7 @@ class StreamDocToEjsTemplate extends Transform {
             (vFile : Vinyl, next : NodeCallback<any>) => {
                 // Parse JSON contents
 
-                const sFileContents = vFile.contents.toString();
+                const sFileContents = vFile.contents ? vFile.contents.toString() : '';
                 capture_error_or_result(JSON.parse, sFileContents, next);
 
             },
@@ -197,7 +201,7 @@ class StreamDocToEjsTemplate extends Transform {
             ( ejsData : Object, next : NodeCallback<string> ) => {
                 // Apply the data to template
 
-                capture_error_or_result(ejs.render, ejsData, next);
+                capture_error_or_result(renderEjsTemplate, this.template, ejsData, next);
 
             },
 
@@ -216,13 +220,12 @@ class StreamDocToEjsTemplate extends Transform {
 
 class StreamConcatVinyl extends Transform {
     
-    private file : Vinyl;
+    private file : Vinyl | undefined;
     private buffer : Array<Buffer>;
     
     constructor(options : TransformOptions = {}) {
         super(options);
         
-        this.file = null;
         this.buffer = [];        
     }
 
@@ -240,20 +243,23 @@ class StreamConcatVinyl extends Transform {
             this.file.contents = null;
         }
 
-        this.buffer.push(Buffer.from(vFile.contents));
         done();
     }
 
     _flush(cbDone : NodeCallback<void>) {
+        
         // Fill the contents
-        this.file.contents = Buffer.concat(this.buffer);
-        this.push(this.file);
+        if (this.file) {
+            this.file.contents = Buffer.concat(this.buffer);
+            this.push(this.file);
+        }
         
         // Cleanup
         this.buffer = [];
-        this.file = null;
+        this.file = void 0;
 
         cbDone();
+        
     }
 
 }
