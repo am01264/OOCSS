@@ -259,15 +259,3 @@ class StreamConcatVinyl extends Transform {
     }
 
 }
-
-function flatten( a : any[]) {
-    if (! Array.isArray(a)) throw new TypeError
-
-    return a.reduce((acc, value) => {
-        if (Array.isArray(value)) {
-            acc.concat(value);
-        } else {
-            acc.push(value);
-        }
-    }, []);
-}
