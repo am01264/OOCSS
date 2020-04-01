@@ -18,12 +18,19 @@ export class CSSReader extends Transform {
         }
 
         const sChunk = vFile.contents ? vFile.contents.toString() : '';
-        const sResult = JSON.stringify(parseCss(sChunk, done));
+        
+        parseCss(sChunk, (err, docs) => {
 
-        vFile.contents = Buffer.from(sResult);
-        this.push(vFile);
+            if (err) return done(err);
 
-        done();
+            const sResult = JSON.stringify(docs);
+            vFile.contents = Buffer.from(sResult);
+            this.push(vFile);
+
+            done();
+
+        });
+        
     }
 }
 
