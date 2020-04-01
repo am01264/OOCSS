@@ -67,15 +67,11 @@ export function capture_error_or_result<A1, R>(
 
 export function capture_error_or_result<R>( ...args : any[] ) : void {
 
-    const func : (...args : any[]) => R = args[0];
-    const funcArgs = (args.length > 2) ? args.slice(1, args.length - 2) : [];
-    const done : NodeCallback<R> = args[args.length-1]
+    const func : (...args : any[]) => R = args.shift(); // First item
+    const done : NodeCallback<R> = args.pop(); // Last item
+    const funcArgs = args; // Whatever is left
 
     // Sanity check arguments
-
-    if (args.length < 2) {
-        throw new TypeError('Expected at least 2-arguments (function to call, and callback with result)')
-    }
 
     if (typeof func !== 'function') {
         throw new TypeError('Expected function as first argument');
