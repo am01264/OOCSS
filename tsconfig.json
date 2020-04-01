@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "outDir": "tools/",
+        
+        "alwaysStrict": true,
+        "strict": true
+    }
+}

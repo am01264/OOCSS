@@ -18,5 +18,8 @@
     "css": "^2.2.4",
     "ejs": "^3.0.1",
     "vinyl-fs": "^3.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
   }
 }
