@@ -20,15 +20,15 @@ interface JobMultiFile {
     outputDir : string;
 }
 
-type Job = JobSingleFile | JobMultiFile;
+export type Job = JobSingleFile | JobMultiFile;
 
-interface Config {
+export interface Config {
     jobs : Job[]
 }
 
 const JOB_FILE = './gendoc.json'
 
-function isJob( j : any ) : j is Job {
+export function isJob( j : any ) : j is Job {
     const isBaseJob = 
         'sourceFiles' in j && typeof j['sourceFiles'] === 'string'
         && 'template' in j && typeof j['template'] === 'string';
@@ -39,13 +39,13 @@ function isJob( j : any ) : j is Job {
     return isBaseJob && (isSingleFile || isMultiFile);
 }
 
-function isConfig( c : any ) : c is Config {
+export function isConfig( c : any ) : c is Config {
     return 'jobs' in c 
         && Array.isArray(c.jobs)
         && c.jobs.every((j : any) => isJob(j))
 }
 
-function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
+export function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
     
     waterfall([
         
@@ -77,7 +77,7 @@ function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
 
 }
 
-function processConfig( oConfig : Config, done : NodeCallback<void> ) {
+export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
 
     oConfig.jobs.forEach(job => {
 
