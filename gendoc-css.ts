@@ -1,11 +1,10 @@
-import {parse, Stylesheet, ParserOptions, Rule, Comment} from "css"
 import async from "async";
-import parseDocComment from "comment-parser"
-
-import {Doc, NodeCallback, capture_error_or_result} from "./gendoc-common"
+import parseDocComment from "comment-parser";
+import { Comment, parse, ParserOptions, Rule, Stylesheet } from "css";
 import { Transform, TransformOptions } from "stream";
+import Vinyl from "vinyl";
 
-import Vinyl from "vinyl"
+import { Doc, NodeCallback } from "./gendoc-common";
 
 export class CSSReader extends Transform {
     constructor(opts : TransformOptions = {objectMode : true}) {

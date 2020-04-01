@@ -1,10 +1,12 @@
-import { fstat, readFile } from "fs";
-import async, { nextTick, concat } from "async";
-import {src, dest} from "vinyl-fs";
-import { NodeCallback, Doc, isDoc, capture_error_or_result } from "./gendoc-common";
-import { CSSReader } from "./gendoc-css";
-import { Transform, TransformOptions, Readable, Stream, pipeline } from "stream";
+import async from "async";
+import ejs from "ejs";
+import { readFile } from "fs";
+import { pipeline, Stream, Transform, TransformOptions } from "stream";
 import Vinyl from "vinyl";
+import { dest, src } from "vinyl-fs";
+
+import { capture_error_or_result, Doc, isDoc, NodeCallback } from "./gendoc-common";
+import { CSSReader } from "./gendoc-css";
 
 interface JobSingleFile {
     sourceFiles : string;
@@ -71,10 +73,7 @@ function readConfigFile( filename : string, cb : NodeCallback<Config> ) {
             }
         }
 
-    ], (err? : Error, result? : Config) => {
-        // Pass along the results
-        cb(err, result);
-    })
+    ], cb)
 
 }
 
@@ -144,7 +143,6 @@ function processConfig( oConfig : Config, done : NodeCallback<void> ) {
 }
 
 
-import ejs from "ejs";
 class StreamDocToEjsTemplate extends Transform {
     
     template : string;
