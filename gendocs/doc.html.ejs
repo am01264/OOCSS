@@ -5,26 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="<%= doc.source %>" />
+    <% docs.forEach(doc => { %><link rel="stylesheet" href="<%= doc.source %>" /><% }) %>
 </head>
 <body>
 
+    <% docs.forEach(doc => { %>
+
+        <h1><%= doc.title %></h1>
+
+        <%= doc.description %>
     
-    <h1><%= doc.title %></h1>
+        <% if (doc.examples.length > 1) { %>
+            <h2>Examples</h2>
+        <% } %>
+    
+        <% doc.examples.forEach((example, index) => { %>
+            
+            <h3>Example <%= index + 1 %></h3>
+    
+            <code class="example-code"><pre><%= example %></pre></code>
+            
+            <div class="example-view">
+                <%- example %>
+            </div>
+    
+        <% }) %>
+    
 
-    <%= doc.description %>
-
-    <% if (doc.examples.length > 1) { %>
-        <h2>Examples</h2>
-    <% } %>
-
-    <% doc.examples.forEach((example, index) => { %>
-        
-        <h3>Example <%= index + 1 %></h3>
-
-        <%= example %>
-
-    <% }) %>
+    <% }) // docs.forEach %>
 
 </body>
 </html>
