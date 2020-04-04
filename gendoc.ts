@@ -225,7 +225,7 @@ class StreamConcatVinyl extends Transform {
     private file : Vinyl | undefined;
     private buffer : Array<Buffer>;
     
-    constructor(options : TransformOptions = {}) {
+    constructor(options : TransformOptions = {objectMode: true}) {
         super(options);
         
         this.buffer = [];        
