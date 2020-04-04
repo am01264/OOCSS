@@ -8,7 +8,7 @@
         {
             "sourceFiles": "components/**/*.css",
             "template": "gendocs/readme.md.ejs",
-            "outputFile": "README.md"
+            "outputFile": "docs/"
         }
     ]
 }
