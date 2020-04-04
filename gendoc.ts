@@ -29,18 +29,18 @@ export interface Config {
 const JOB_FILE = './gendoc.json'
 
 export function isJob( j : any ) : j is Job {
-    const isBaseJob = 
+    const isBaseJob = j &&
         'sourceFiles' in j && typeof j['sourceFiles'] === 'string'
         && 'template' in j && typeof j['template'] === 'string';
 
-    const isSingleFile = 'outputFile' in j && typeof j.outputFile === 'string';
-    const isMultiFile = 'outputDir' in j && typeof j.outputDir === 'string';
+    const isSingleFile = j && 'outputFile' in j && typeof j.outputFile === 'string';
+    const isMultiFile = j && 'outputDir' in j && typeof j.outputDir === 'string';
 
     return isBaseJob && (isSingleFile || isMultiFile);
 }
 
 export function isConfig( c : any ) : c is Config {
-    return 'jobs' in c 
+    return c && 'jobs' in c 
         && Array.isArray(c.jobs)
         && c.jobs.every((j : any) => isJob(j))
 }
@@ -176,7 +176,13 @@ class StreamDocToEjsTemplate extends Transform {
                 // Parse JSON contents
 
                 const sFileContents = vFile.contents ? vFile.contents.toString() : '';
-                capture_error_or_result(JSON.parse, sFileContents, next);
+
+                if (sFileContents.length > 0) {
+                    capture_error_or_result(JSON.parse, sFileContents, next);
+                } else {
+                    // Skip this one
+                    next(null, null)
+                }
 
             },
 
