@@ -5,8 +5,9 @@ import { pipeline, Stream, Transform, TransformOptions } from "stream";
 import * as Vinyl from "vinyl";
 import { dest, src } from "vinyl-fs";
 
-import { capture_error_or_result, Doc, isDoc, NodeCallback } from "./gendoc-common";
+import { capture_error_or_result, Doc, isDoc, NodeCallback, array_flatten } from "./gendoc-common";
 import { CSSReader } from "./gendoc-css";
+import * as assert from "assert";
 
 interface JobSingleFile {
     sourceFiles : string;
@@ -103,7 +104,7 @@ export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
                 // Condensing if applicable
 
                 if ('outputFile' in job) {
-                    trail.push(new StreamConcatVinyl())                
+                    trail.push(new StreamConcatVinylJson())                
                 }
 
                 next(null, trail);
@@ -120,6 +121,13 @@ export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
                     next(null, trail);
                 });
 
+            },
+
+            (trail : Stream[], next : NodeCallback<Stream[]>) => {
+                // Change file extension
+
+                trail.push(new StreamChangeExtension('html'));
+                next(null, trail);
             },
 
             (trail : Stream[], next : NodeCallback<Stream[]>) => {
@@ -148,6 +156,36 @@ export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
 
 }
 
+class StreamChangeExtension extends Transform {
+
+    extension : string;
+
+    constructor(extension : string, opts : TransformOptions = {objectMode : true}) {
+        super(opts);
+
+        assert.strictEqual(typeof extension, "string", "Expected file extension to be set")
+        
+        if (extension.length > 0 && extension[0] !== '.') {
+            extension = '.' + extension;
+        }
+
+        this.extension = extension;
+    }
+
+    _transform(vFile : any, _encoding : string, done : NodeCallback<Vinyl>) {
+
+        if (! Vinyl.isVinyl(vFile)) {
+            return done(new Error('Expected Vinyl file, but got something else'));
+        }
+
+        assert.strictEqual(typeof this.extension, "string", "Expected file extension to be set")
+        
+        vFile.extname = this.extension;
+        done(null, vFile);
+
+    }
+
+}
 
 class StreamDocToEjsTemplate extends Transform {
     
@@ -176,20 +214,16 @@ class StreamDocToEjsTemplate extends Transform {
                 // Parse JSON contents
 
                 const sFileContents = vFile.contents ? vFile.contents.toString() : '';
-
-                if (sFileContents.length > 0) {
-                    capture_error_or_result(JSON.parse, sFileContents, next);
-                } else {
-                    // Skip this one
-                    next(null, null)
-                }
+                capture_error_or_result(JSON.parse, sFileContents, next);
 
             },
 
             ( anything : any, next : NodeCallback<{doc : Doc}|{docs : Doc[]}> ) => {
                 // Prepare data for template
-
+                
                 const ejsData = {};
+                
+                if (Array.isArray(anything)) anything = array_flatten(anything, 1);
 
                 if (Array.isArray(anything) && anything.every(d => isDoc(d))) {
                     // Handle an array of docs
@@ -226,10 +260,14 @@ class StreamDocToEjsTemplate extends Transform {
     }
 }
 
-class StreamConcatVinyl extends Transform {
+class StreamConcatVinylJson extends Transform {
     
     private file : Vinyl | undefined;
     private buffer : Array<Buffer>;
+
+    static JSON_ARRAY_OPEN = Buffer.from('[');
+    static JSON_ARRAY_SEPARATOR = Buffer.from(',');
+    static JSON_ARRAY_CLOSE = Buffer.from(']');
     
     constructor(options : TransformOptions = {objectMode: true}) {
         super(options);
@@ -240,6 +278,15 @@ class StreamConcatVinyl extends Transform {
     _transform(vFile : Vinyl, _encoding : string, done : NodeCallback<void>) {
         if (! Vinyl.isVinyl(vFile)) {
             done(new TypeError('Expected Vinyl file'));
+        }
+
+        if (this.buffer.length === 0) this.buffer.push(StreamConcatVinylJson.JSON_ARRAY_OPEN);
+
+        if (vFile.contents) {
+            this.buffer.push(
+                Buffer.from(vFile.contents.toString()),
+                StreamConcatVinylJson.JSON_ARRAY_SEPARATOR
+                )
         }
 
         if (! this.file) {
@@ -255,9 +302,16 @@ class StreamConcatVinyl extends Transform {
     }
 
     _flush(cbDone : NodeCallback<void>) {
-        
-        // Fill the contents
-        if (this.file) {
+
+        // If we have content, fill and send
+        if (this.file && this.buffer.length > 0) {
+
+            if (this.buffer[this.buffer.length - 1] === StreamConcatVinylJson.JSON_ARRAY_SEPARATOR) {
+                this.buffer[this.buffer.length - 1] = StreamConcatVinylJson.JSON_ARRAY_CLOSE
+            } else {
+                this.buffer.push(StreamConcatVinylJson.JSON_ARRAY_CLOSE)
+            }
+
             this.file.contents = Buffer.concat(this.buffer);
             this.push(this.file);
         }

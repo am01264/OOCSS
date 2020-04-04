@@ -1,3 +1,4 @@
+import { AssertionError } from "assert";
 
 type ParamFalsy = null | undefined; // Ignoring false, integer 0, empty string & NaN 
 
@@ -92,5 +93,59 @@ export function capture_error_or_result<R>( ...args : any[] ) : void {
     }
 
     done(null, response);
+
+}
+
+interface ArrayPointer {
+    arr : any[];
+    ix : number;
+}
+
+export function array_flatten( arr : any[], depth = 1 ) {
+
+    if (! Array.isArray(arr)) throw new TypeError(`${array_flatten.name}: Expected array argument`);
+    if (!Number.isInteger(depth) || depth < 0) throw new RangeError(`${array_flatten.name}: Maximum depth should be a positive integer`);
+
+    const aStack : ArrayPointer[] = Array(depth+1)
+    const aRes : any[] = [];
+
+    let ixStack = 0;
+    aStack[ixStack] = { arr: arr, ix: 0 };
+    
+STACK_LOOP:
+    while (ixStack > -1) {
+        const apCurrent = aStack[ixStack]
+
+        for (; apCurrent.ix < apCurrent.arr.length; apCurrent.ix++) {
+            const iCurrent = apCurrent.arr[apCurrent.ix];
+
+            // If we've not exceeded max-depth, unravel any arrays first
+            if (ixStack < depth && Array.isArray(iCurrent)) {
+                
+                // Add the array to the search stack
+                ixStack++;
+                aStack[ixStack] = { arr: iCurrent, ix: 0 };
+                
+                // Move the current index to the next item
+                // Required to avoid an infinite looping.
+                apCurrent.ix++;
+
+                // Process the next array on the search stack
+                continue STACK_LOOP;
+
+            } else {
+
+                // Add the result
+                aRes.push(iCurrent);
+
+            }
+        }
+
+        // Remove the array from the search stack
+        // We just change the index here, no need to clear existing contents
+        ixStack--;
+    }
+
+    return aRes;
 
 }
