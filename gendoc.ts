@@ -126,7 +126,17 @@ export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
             (trail : Stream[], next : NodeCallback<Stream[]>) => {
                 // Change file extension
 
-                trail.push(new StreamChangeExtension('html'));
+                const rFileExtension = /\.[^\.]+$/
+                const templateBasename = job.template.replace(rFileExtension, '')
+
+                const mOptionalExtension = rFileExtension.test(templateBasename) && templateBasename.match(rFileExtension);
+
+                let chosenExtension = 'html';
+                if (mOptionalExtension && 0 in mOptionalExtension) {
+                    chosenExtension = mOptionalExtension[0];
+                } 
+
+                trail.push(new StreamChangeExtension(chosenExtension));
                 next(null, trail);
             },
 
