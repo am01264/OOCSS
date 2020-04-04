@@ -127,7 +127,9 @@ export function processConfig( oConfig : Config, done : NodeCallback<void> ) {
                     trail.push(dest(job.outputDir))
                 } else {
                     trail.push(dest(job.outputFile))
-                }        
+                }   
+                
+                next(null, trail);
             }
 
         ], (err, result? : Stream[]) => {
